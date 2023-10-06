@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "KeyVox.Engine/1.0.0": {
         "dependencies": {
-          "Microsoft.CognitiveServices.Speech": "1.32.1"
+          "Microsoft.CognitiveServices.Speech": "1.32.1",
+          "System.Reactive": "6.0.0"
         },
         "runtime": {
           "KeyVox.Engine.dll": {}
@@ -458,6 +459,14 @@
             "fileVersion": "0.0.0.0"
           }
         }
+      },
+      "System.Reactive/6.0.0": {
+        "runtime": {
+          "lib/net6.0/System.Reactive.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.1"
+          }
+        }
       }
     }
   },
@@ -473,6 +482,13 @@
       "sha512": "sha512-9oy2Yqd5AdGx2VQsUR2WbIuz87y+Wl3iyWnWxd2NlBINWTHsYRv1rT5iptsxb25sv+rFql0LhMpvEs30gx/fTg==",
       "path": "microsoft.cognitiveservices.speech/1.32.1",
       "hashPath": "microsoft.cognitiveservices.speech.1.32.1.nupkg.sha512"
+    },
+    "System.Reactive/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-31kfaW4ZupZzPsI5PVe77VhnvFF55qgma7KZr/E0iFTs6fmdhhG8j0mgEx620iLTey1EynOkEfnyTjtNEpJzGw==",
+      "path": "system.reactive/6.0.0",
+      "hashPath": "system.reactive.6.0.0.nupkg.sha512"
     }
   }
 }

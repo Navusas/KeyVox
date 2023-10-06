@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "6YiQHCmzCLyYjf94YC74qzN0o7TrO31S2bXIvyyqmm8gTZNRKM0XQcISkYoDcqUrSk1UExYwiDuCUBFjGmleDw==",
+  "dgSpecHash": "wTJfZyKH4vdsSXOqjVDD60cCgSmVCous414OW8G4goAbmvC7qySM/yMTkJ+R6lxCnFC7R8wGd+xrqNLIAwV/hg==",
   "success": true,
   "projectFilePath": "C:\\Dev\\my\\KeyVox\\KeyVox.Engine\\KeyVox.Engine.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Navus\\.nuget\\packages\\microsoft.cognitiveservices.speech\\1.32.1\\microsoft.cognitiveservices.speech.1.32.1.nupkg.sha512"
+    "C:\\Users\\Navus\\.nuget\\packages\\microsoft.cognitiveservices.speech\\1.32.1\\microsoft.cognitiveservices.speech.1.32.1.nupkg.sha512",
+    "C:\\Users\\Navus\\.nuget\\packages\\system.reactive\\6.0.0\\system.reactive.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

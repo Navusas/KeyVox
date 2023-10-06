@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.32.1" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
 
 </Project>
