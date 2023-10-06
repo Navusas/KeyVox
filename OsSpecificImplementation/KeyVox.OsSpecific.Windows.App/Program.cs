@@ -36,19 +36,23 @@ namespace KeyVox.OsSpecific.Windows.App
 
         private static async void Listener_Triggered(IKeyboardEventSource Keyboard, object sender, KeyChordEventArgs e)
         {
-            using (Keyboard.Suspend())
-            {
-                await Simulate.Events()
-                    .Release(KeyCode.A)
-                    .Release(KeyCode.LControl)
-                    .Release(KeyCode.LShift)
-                    .Invoke();
-
-                await Task.Delay(50);
-            }
+            await Simulate.Events()
+                .Release(KeyCode.A, KeyCode.LControlKey, KeyCode.LShiftKey)
+                .Invoke();
 
             var captureSelection = await CaptureCurrentSelection(Keyboard);
 
+            // wait very short amount of time. In case we replaced text,
+
+            await Task.Delay(20);
+            var captureSelectionTwice = await CaptureCurrentSelection(Keyboard);
+            if (captureSelection != captureSelectionTwice)
+            {
+                await Simulate.Events()
+                    .ClickChord(KeyCode.LControl, KeyCode.Z)
+                    .Wait(10)
+                    .Invoke();
+            }
             MessageBox.Show(captureSelection);
         }
 
@@ -61,6 +65,7 @@ namespace KeyVox.OsSpecific.Windows.App
             {
                 await Simulate.Events()
                     .ClickChord(KeyCode.LControl, KeyCode.C)
+                    .Wait(10)
                     .Invoke();
             }
             string selectedText;
