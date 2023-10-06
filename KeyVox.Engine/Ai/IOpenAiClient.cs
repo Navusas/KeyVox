@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+namespace KeyVox.Engine.Ai;
 
-namespace KeyVox.Engine.Ai
+public interface IOpenAiClient
 {
-    public interface IOpenAiClient
-    {
-    }
+    Task<string> ChatAsync(string snippet, string request);
 }
