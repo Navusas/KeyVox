@@ -9,20 +9,16 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
 
         private SpeechRecognizer _recognizer;
         private StringBuilder _finalResultBuilder;
-        private MemoryStream _memoryStream;
-        private StreamWriter _streamWriter;
 
         public AzureContinousSpeechToTextClient(SpeechConfig speechConfig)
         {
             _recognizer = new SpeechRecognizer(speechConfig);
             _finalResultBuilder = new();
-            _memoryStream = new();
-            _streamWriter = new(_memoryStream);
 
         }
 
 
-        public async Task<Stream> StartStream()
+        public async Task StartStream(Action<string> TextRecognized)
         {
 
             _recognizer.Recognized += (s, e) =>
@@ -30,26 +26,17 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
                 if (e.Result.Reason == ResultReason.RecognizedSpeech)
                 {
                     _finalResultBuilder.Append(e.Result.Text + " ");
+                    TextRecognized?.Invoke(_finalResultBuilder.ToString());
                 }
             };
             _recognizer.Recognizing += (s, e) =>
             {
                 if (e.Result.Reason == ResultReason.RecognizingSpeech)
                 {
-                    Console.WriteLine(e.Result.Text);
-                    if (_memoryStream != null && _memoryStream.CanWrite)
-                    {
-                        _streamWriter.Write(e.Result.Text + " ");
-                        _streamWriter.Flush();
-                    }
-
-
+                    TextRecognized?.Invoke(_finalResultBuilder.ToString() + e.Result.Text);
                 }
             };
             await _recognizer!.StartContinuousRecognitionAsync();
-
-            _memoryStream.Position = 0;
-            return _memoryStream;
 
         }
 
@@ -61,11 +48,10 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
 
         public async void Dispose()
         {
+            Console.WriteLine("Disposing resources.");
+            GC.SuppressFinalize(this);
             await _recognizer.StopContinuousRecognitionAsync();
             _recognizer.Dispose();
-
-            _streamWriter?.Dispose();
-            _memoryStream?.Dispose();
         }
     }
 }

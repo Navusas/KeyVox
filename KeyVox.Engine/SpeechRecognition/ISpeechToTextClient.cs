@@ -10,7 +10,8 @@ namespace KeyVox.Engine.SpeechRecognition
     {
         Task<string> OneShotRecognitionAsync();
 
-        Task<Stream> StartRecognitionStreamAsync();
+        event Action<string> TextRecognized;
+        Task StartRecognitionStreamAsync();
         Task<string> StopRecognitionStreamAsync();
     }
 }

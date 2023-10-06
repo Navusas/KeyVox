@@ -10,6 +10,7 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
         private readonly string _region;
         private AzureContinousSpeechToTextClient? _continousSpeechToTextClient;
 
+        public event Action<string> TextRecognized;
 
         public AzureSpeechToTextClient()
         {
@@ -42,13 +43,12 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
         /// and continues to do so until <seealso cref="StopRecognitionStreamAsync"/> is invoked
         /// </summary>
         /// <returns></returns>
-        public async Task<Stream> StartRecognitionStreamAsync()
+        public async Task StartRecognitionStreamAsync()
         {
             var speechConfig = SpeechConfig.FromSubscription(_apiKey, _region);
             _continousSpeechToTextClient = new AzureContinousSpeechToTextClient(speechConfig);
 
-            var stream = await _continousSpeechToTextClient.StartStream();
-            return stream;
+            await _continousSpeechToTextClient.StartStream(TextRecognized);
         }
 
         public async Task<string> StopRecognitionStreamAsync()
@@ -61,5 +61,6 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
             }
             else return string.Empty;
         }
+
     }
 }

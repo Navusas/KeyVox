@@ -18,16 +18,25 @@ Console.WriteLine("Hello!");
 
 
 ISpeechToTextClient speechToTextClient = new AzureSpeechToTextClient();
-var streamReader = await speechToTextClient.StartRecognitionStreamAsync();
 
-using (var reader = new StreamReader(streamReader))
+// Subscribe to the event
+speechToTextClient.TextRecognized += recognizedText =>
 {
-    var responseAsString = await reader.ReadToEndAsync();
-    Console.WriteLine(responseAsString);
-}
+    Console.WriteLine(recognizedText); // Print the recognized text as it comes in
+};
+
+// Start recognition
+await speechToTextClient.StartRecognitionStreamAsync();
 
 Console.WriteLine("Press any key to stop...");
 Console.ReadKey();
 
+// Stop recognition
 var finalResult = await speechToTextClient.StopRecognitionStreamAsync();
 Console.WriteLine("\nFinal Result: " + finalResult);
+
+// Unsubscribe from the event to clean up
+speechToTextClient.TextRecognized -= recognizedText =>
+{
+    Console.WriteLine(recognizedText);
+};
