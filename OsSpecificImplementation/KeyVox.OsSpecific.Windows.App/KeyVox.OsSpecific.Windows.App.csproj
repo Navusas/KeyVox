@@ -9,7 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\Navus\.nuget\packages\windowsinput\6.4.1\contentFiles\any\net6.0-windows7.0\.nuget\mouse-keyboard-hook-logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NHotkey.WindowsForms" Version="2.1.1" />
+    <PackageReference Include="WindowsInput" Version="6.4.1" />
   </ItemGroup>
 
 </Project>

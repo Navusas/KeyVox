@@ -1,11 +1,12 @@
-using NHotkey.WindowsForms;
-using NHotkey;
+using WindowsInput;
+using WindowsInput.Events.Sources;
+using WindowsInput.Events;
+using System.Runtime.InteropServices;
 
 namespace KeyVox.OsSpecific.Windows.App
 {
     internal static class Program
     {
-        private static bool _isOpen = false;
 
         [STAThread]
         public static void Main()
@@ -20,64 +21,51 @@ namespace KeyVox.OsSpecific.Windows.App
                 icon.ContextMenuStrip = new ContextMenuStrip();
                 icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
 
-                HotkeyManager.Current.AddOrReplace("ShiftZHotkey", Keys.Alt | Keys.A, OnHotkeyPressed);
 
-                Application.Run();
+                using (var Keyboard = Capture.Global.KeyboardAsync())
+                {
+                    var Listener = new KeyChordEventSource(Keyboard, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
+                    Listener.Triggered += (x, y) => Listener_Triggered(Keyboard, x, y);
+                    Listener.Reset_On_Parent_EnabledChanged = false;
+                    Listener.Enabled = true;
+
+                    Application.Run();
+                }
             }
         }
 
-        private static void OnHotkeyPressed(object sender, HotkeyEventArgs e)
+
+        private static async void Listener_Triggered(IKeyboardEventSource Keyboard, object sender, KeyChordEventArgs e)
         {
-            if (!_isOpen)
-            {
-                _isOpen = true;
-
-                string selectedText = GetCurrentlySelectedText();
-
-                // Handle the hotkey press here, e.g., show a Tauri window or another form.
-                MessageBox.Show($"SHIFT + Z pressed!\nSelected Text: {selectedText}");
-
-                _isOpen = false;
-            }
-
-            e.Handled = true;
-        }
-
-        private static string GetCurrentlySelectedText()
-        {
-            // Backup the current clipboard content
             IDataObject clipboardBackup = Clipboard.GetDataObject();
             string initialClipboardText = Clipboard.GetText();
 
+            await Simulate.Events()
+                .Release(KeyCode.LControl)
+                .Release(KeyCode.LShift)
+                .Invoke();
 
-            // Simulate Ctrl+C to copy selected text to clipboard
-            SendKeys.SendWait("^c");
+            await Simulate.Events()
+                .ClickChord(KeyCode.LControl, KeyCode.C)
+                .Invoke();
 
-
-            //// Clipboard update takes time. We
-            //// want to poll for clipboard update (up to a timeout)
-            string selectedText = string.Empty;
-            int attemptLimit = 200;
-            int attempts = 200;
-            for (int i = 0; i < attemptLimit; i++)
+            string selectedText;
+            int retries = 100;
+            do
             {
+                await Task.Delay(50);
                 selectedText = Clipboard.GetText();
-                if (selectedText != initialClipboardText)
-                {
-                    break;
-                }
-                Thread.Sleep(10);
-                attempts--;
-            }
-
-            selectedText += "\n\n attempt " + attempts.ToString();
+            } while (selectedText == initialClipboardText && --retries > 0);
 
 
-            // Restore clipboard from backup
-            if (clipboardBackup != null)
-                Clipboard.SetDataObject(clipboardBackup);
-
-            return selectedText;
+            await Simulate.Events()
+                .ClickChord(KeyCode.LControl, KeyCode.Z)
+                .Invoke();
+            MessageBox.Show($"SHIFT + Space pressed. It took {100 - retries} attemps\n\n\nSelected Text: {selectedText}");
         }
+
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
     }
 }

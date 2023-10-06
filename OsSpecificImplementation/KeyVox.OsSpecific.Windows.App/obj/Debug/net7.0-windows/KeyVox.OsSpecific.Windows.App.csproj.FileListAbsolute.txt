@@ -1,3 +1,8 @@
+C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.csproj.AssemblyReference.cache
+C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.AssemblyInfoInputs.cache
+C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.AssemblyInfo.cs
+C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.csproj.CoreCompileInputs.cache
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.exe
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.deps.json
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.runtimeconfig.json
@@ -5,11 +10,7 @@ C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debu
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.pdb
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\NHotkey.dll
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\NHotkey.WindowsForms.dll
-C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.csproj.AssemblyReference.cache
-C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.GeneratedMSBuildEditorConfig.editorconfig
-C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.AssemblyInfoInputs.cache
-C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.AssemblyInfo.cs
-C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.csproj.CoreCompileInputs.cache
+C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\bin\Debug\net7.0-windows\WindowsInput.dll
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.csproj.CopyComplete
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\KeyVox.OsSpecific.Windows.App.dll
 C:\Dev\my\KeyVox\OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\obj\Debug\net7.0-windows\refint\KeyVox.OsSpecific.Windows.App.dll

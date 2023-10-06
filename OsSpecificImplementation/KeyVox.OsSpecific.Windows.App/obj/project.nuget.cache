@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "9cO4nSV89mG0UG7o5Eo581qsuimt4PwRFh9okzoVSy/Obo1Pe0IUqUI+qJ3RXj0WGF7HY1jgF9rBHcicPpaHjw==",
+  "dgSpecHash": "bEB0wH0g76CWWff0MdHU+RkepZvO8aocWqM3IdV0XNYhR7EqprlSxbrRu1GD2Fr405ozL8RLlWB7agcCxEqN5g==",
   "success": true,
   "projectFilePath": "C:\\Dev\\my\\KeyVox\\OsSpecificImplementation\\KeyVox.OsSpecific.Windows.App\\KeyVox.OsSpecific.Windows.App.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Navus\\.nuget\\packages\\nhotkey\\2.1.1\\nhotkey.2.1.1.nupkg.sha512",
-    "C:\\Users\\Navus\\.nuget\\packages\\nhotkey.windowsforms\\2.1.1\\nhotkey.windowsforms.2.1.1.nupkg.sha512"
+    "C:\\Users\\Navus\\.nuget\\packages\\nhotkey.windowsforms\\2.1.1\\nhotkey.windowsforms.2.1.1.nupkg.sha512",
+    "C:\\Users\\Navus\\.nuget\\packages\\windowsinput\\6.4.1\\windowsinput.6.4.1.nupkg.sha512"
   ],
   "logs": []
 }

@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "KeyVox.OsSpecific.Windows.App/1.0.0": {
         "dependencies": {
-          "NHotkey.WindowsForms": "2.1.1"
+          "NHotkey.WindowsForms": "2.1.1",
+          "WindowsInput": "6.4.1"
         },
         "runtime": {
           "KeyVox.OsSpecific.Windows.App.dll": {}
@@ -30,6 +31,14 @@
           "lib/netcoreapp3.0/NHotkey.WindowsForms.dll": {
             "assemblyVersion": "2.0.0.0",
             "fileVersion": "2.1.1.0"
+          }
+        }
+      },
+      "WindowsInput/6.4.1": {
+        "runtime": {
+          "lib/net6.0-windows7.0/WindowsInput.dll": {
+            "assemblyVersion": "6.4.1.0",
+            "fileVersion": "6.4.1.0"
           }
         }
       }
@@ -54,6 +63,13 @@
       "sha512": "sha512-Ts9WvAo7ZABwEorpCOQrti0FncMPUsh4npXSo4Weeq/+v2oE9TBb5QFWZj63WI0iqPkGfaSsWmhBZ4y8iSZLeA==",
       "path": "nhotkey.windowsforms/2.1.1",
       "hashPath": "nhotkey.windowsforms.2.1.1.nupkg.sha512"
+    },
+    "WindowsInput/6.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wfg9uu5xDvBcaNqvR1ZTFQqBf4bKzkxdd5WviTZPy4cAywEzLzofuYswZB3nGIEnnlwGLBGSgrNOEZH/w8JI9w==",
+      "path": "windowsinput/6.4.1",
+      "hashPath": "windowsinput.6.4.1.nupkg.sha512"
     }
   }
 }
