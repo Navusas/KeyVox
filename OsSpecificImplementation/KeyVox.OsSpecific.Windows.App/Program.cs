@@ -1,21 +1,14 @@
 using System;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
+using WindowsInput;
+using WindowsInput.Events.Sources;
+using WindowsInput.Events;
+using System.Threading.Tasks;
 
 namespace KeyVox.OsSpecific.Windows.App
 {
     internal static class Program
     {
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-
-        private static LowLevelKeyboardProc _proc = HookCallback;
-        private static IntPtr _hookID = IntPtr.Zero;
-        private static bool isSpacePressed = false;
-        private static bool isShiftPressed = false;
-        private static bool isShiftSpaceDetected = false;
-        private static bool isArtificialCtrlC = false;
-
         [STAThread]
         public static void Main()
         {
@@ -24,136 +17,68 @@ namespace KeyVox.OsSpecific.Windows.App
 
             using (NotifyIcon icon = new NotifyIcon())
             {
-                icon.Icon = SystemIcons.Exclamation;
+                icon.Icon = SystemIcons.Shield; // Use your custom icon here.
                 icon.Visible = true;
                 icon.ContextMenuStrip = new ContextMenuStrip();
                 icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
 
-                _hookID = SetHook(_proc);
-
-                ClipboardNotification.ClipboardUpdate += (sender, e) =>
+                using (var Keyboard = Capture.Global.KeyboardAsync())
                 {
-                    if (isShiftSpaceDetected)
-                    {
-                        string selectedText = Clipboard.GetText();
-                        MessageBox.Show($"SHIFT + Space pressed. Selected Text: {selectedText}");
-                        isShiftSpaceDetected = false;
-                    }
-                };
+                    var Listener = new KeyChordEventSource(Keyboard, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
+                    Listener.Triggered += (x, y) => Listener_Triggered(Keyboard, x, y);
+                    Listener.Reset_On_Parent_EnabledChanged = false;
+                    Listener.Enabled = true;
 
-                Application.Run();
-
-                UnhookWindowsHookEx(_hookID);
+                    Application.Run();
+                }
             }
         }
 
-        private static IntPtr SetHook(LowLevelKeyboardProc proc)
+        private static async void Listener_Triggered(IKeyboardEventSource Keyboard, object sender, KeyChordEventArgs e)
         {
-            using (var curProcess = System.Diagnostics.Process.GetCurrentProcess())
-            using (var curModule = curProcess.MainModule)
+            using (Keyboard.Suspend())
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                await Simulate.Events()
+                    .Release(KeyCode.A)
+                    .Release(KeyCode.LControl)
+                    .Release(KeyCode.LShift)
+                    .Invoke();
+
+                await Task.Delay(50);
             }
+
+            var captureSelection = await CaptureCurrentSelection(Keyboard);
+
+            MessageBox.Show(captureSelection);
         }
 
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        private static async Task<string> CaptureCurrentSelection(IKeyboardEventSource Keyboard)
         {
-            if (isArtificialCtrlC)
+            IDataObject clipboardBackup = Clipboard.GetDataObject(); // Backup current clipboard
+            string initialClipboardText = Clipboard.GetText();
+
+            using (Keyboard.Suspend())
             {
-                int vkCode = Marshal.ReadInt32(lParam);
-                if ((vkCode == (int)Keys.ControlKey) || (vkCode == (int)Keys.C))
-                {
-                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
-                }
-                else
-                {
-                    isArtificialCtrlC = false; // If any other key is detected, reset the flag.
-                }
+                await Simulate.Events()
+                    .ClickChord(KeyCode.LControl, KeyCode.C)
+                    .Invoke();
+            }
+            string selectedText;
+            int retries = 40;
+
+            do
+            {
+                await Task.Delay(50);
+                selectedText = Clipboard.GetText();
+            } while (selectedText == initialClipboardText && --retries > 0);
+
+            // Restore original clipboard
+            if (clipboardBackup != null)
+            {
+                Clipboard.SetDataObject(clipboardBackup, true);
             }
 
-            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
-            {
-                int vkCode = Marshal.ReadInt32(lParam);
-                if (vkCode == (int)Keys.LShiftKey) isShiftPressed = true;
-                if (vkCode == (int)Keys.Space) isSpacePressed = true;
-
-                if (isShiftPressed && isSpacePressed)
-                {
-                    isShiftSpaceDetected = true;
-                    SimulateCtrlC();
-                    return (IntPtr)1;  // Suppress the space key press from being processed further
-                }
-            }
-            else if (nCode >= 0 && wParam == (IntPtr)0x0101) // WM_KEYUP
-            {
-                int vkCode = Marshal.ReadInt32(lParam);
-                if (vkCode == (int)Keys.LShiftKey) isShiftPressed = false;
-                if (vkCode == (int)Keys.Space) isSpacePressed = false;
-            }
-
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
-        }
-
-        private static void SimulateCtrlC()
-        {
-            isArtificialCtrlC = true; // Set the flag
-
-            keybd_event((byte)Keys.ControlKey, 0, 0, 0);
-            keybd_event((byte)Keys.C, 0, 0, 0);
-            keybd_event((byte)Keys.C, 0, 0x02, 0);
-            keybd_event((byte)Keys.ControlKey, 0, 0x02, 0);
-        }
-
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        [DllImport("user32.dll")]
-        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
-
-        public static class ClipboardNotification
-        {
-            [DllImport("user32.dll", SetLastError = true)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            public static extern bool AddClipboardFormatListener(IntPtr hwnd);
-
-            public static event EventHandler ClipboardUpdate;
-
-            private static NotificationForm _form = new NotificationForm();
-
-            private class NotificationForm : Form
-            {
-                public NotificationForm()
-                {
-                    // Turn the form invisible
-                    this.ShowInTaskbar = false;
-                    this.FormBorderStyle = FormBorderStyle.None;
-                    this.Load += (s, e) => this.Size = new System.Drawing.Size(0, 0);
-
-                    AddClipboardFormatListener(this.Handle);
-                }
-
-                protected override void WndProc(ref Message m)
-                {
-                    if (m.Msg == 0x031D) // WM_CLIPBOARDUPDATE
-                    {
-                        ClipboardUpdate?.Invoke(null, EventArgs.Empty);
-                    }
-                    base.WndProc(ref m);
-                }
-            }
+            return selectedText;
         }
     }
 }
