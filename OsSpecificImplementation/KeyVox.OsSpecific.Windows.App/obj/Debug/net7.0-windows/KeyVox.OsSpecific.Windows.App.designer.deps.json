@@ -1,0 +1,46 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "NHotkey/2.1.1": {
+        "runtime": {
+          "lib/netcoreapp3.0/NHotkey.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.1.0"
+          }
+        }
+      },
+      "NHotkey.WindowsForms/2.1.1": {
+        "dependencies": {
+          "NHotkey": "2.1.1"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/NHotkey.WindowsForms.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.1.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "NHotkey/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LLjgy7CUEgZN6zyEjJmpNUrz5jkeKahd34j5Ys2pImjilRPlZFWRRr8yiqywWsRe8p1WfVsLcvdutjiwPBHEpg==",
+      "path": "nhotkey/2.1.1",
+      "hashPath": "nhotkey.2.1.1.nupkg.sha512"
+    },
+    "NHotkey.WindowsForms/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Ts9WvAo7ZABwEorpCOQrti0FncMPUsh4npXSo4Weeq/+v2oE9TBb5QFWZj63WI0iqPkGfaSsWmhBZ4y8iSZLeA==",
+      "path": "nhotkey.windowsforms/2.1.1",
+      "hashPath": "nhotkey.windowsforms.2.1.1.nupkg.sha512"
+    }
+  }
+}

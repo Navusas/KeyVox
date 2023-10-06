@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "6YiQHCmzCLyYjf94YC74qzN0o7TrO31S2bXIvyyqmm8gTZNRKM0XQcISkYoDcqUrSk1UExYwiDuCUBFjGmleDw==",
+  "success": true,
+  "projectFilePath": "C:\\Dev\\my\\KeyVox\\KeyVox.Engine\\KeyVox.Engine.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Navus\\.nuget\\packages\\microsoft.cognitiveservices.speech\\1.32.1\\microsoft.cognitiveservices.speech.1.32.1.nupkg.sha512"
+  ],
+  "logs": []
+}

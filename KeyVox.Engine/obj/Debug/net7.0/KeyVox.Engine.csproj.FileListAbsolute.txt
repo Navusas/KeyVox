@@ -1,0 +1,12 @@
+C:\Dev\my\KeyVox\KeyVox.Engine\bin\Debug\net7.0\KeyVox.Engine.deps.json
+C:\Dev\my\KeyVox\KeyVox.Engine\bin\Debug\net7.0\KeyVox.Engine.dll
+C:\Dev\my\KeyVox\KeyVox.Engine\bin\Debug\net7.0\KeyVox.Engine.pdb
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.csproj.AssemblyReference.cache
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.GeneratedMSBuildEditorConfig.editorconfig
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.AssemblyInfoInputs.cache
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.AssemblyInfo.cs
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.csproj.CoreCompileInputs.cache
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.dll
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\refint\KeyVox.Engine.dll
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\KeyVox.Engine.pdb
+C:\Dev\my\KeyVox\KeyVox.Engine\obj\Debug\net7.0\ref\KeyVox.Engine.dll
