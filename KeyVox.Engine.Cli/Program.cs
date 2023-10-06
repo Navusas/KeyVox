@@ -1,20 +1,7 @@
 ﻿using KeyVox.Engine.SpeechRecognition;
 using KeyVox.Engine.SpeechRecognition.Providers;
 
-Console.WriteLine("Hello!");
-
-
-//var speechService = new AzureSpeechToTextClient();
-
-//Console.WriteLine("Press any key to start listening...");
-//Console.ReadKey();
-
-//string transcribedText = await speechService.RecognizeSpeechAsync();
-//Console.WriteLine($"Transcribed Text: {transcribedText}");
-
-//Console.WriteLine("Press any key to exit...");
-//Console.ReadKey();
-
+Console.WriteLine("Hello to KeyVox!");
 
 
 ISpeechToTextClient speechToTextClient = new AzureSpeechToTextClient();
