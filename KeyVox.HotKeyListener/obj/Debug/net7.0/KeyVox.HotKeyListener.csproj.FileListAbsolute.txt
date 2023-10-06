@@ -1,5 +1,0 @@
-C:\Dev\my\KeyVox\KeyVox.HotKeyListener\obj\Debug\net7.0\KeyVox.HotKeyListener.csproj.AssemblyReference.cache
-C:\Dev\my\KeyVox\KeyVox.HotKeyListener\obj\Debug\net7.0\KeyVox.HotKeyListener.GeneratedMSBuildEditorConfig.editorconfig
-C:\Dev\my\KeyVox\KeyVox.HotKeyListener\obj\Debug\net7.0\KeyVox.HotKeyListener.AssemblyInfoInputs.cache
-C:\Dev\my\KeyVox\KeyVox.HotKeyListener\obj\Debug\net7.0\KeyVox.HotKeyListener.AssemblyInfo.cs
-C:\Dev\my\KeyVox\KeyVox.HotKeyListener\obj\Debug\net7.0\KeyVox.HotKeyListener.csproj.CoreCompileInputs.cache
