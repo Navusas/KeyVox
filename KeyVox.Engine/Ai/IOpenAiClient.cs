@@ -1,5 +1,4 @@
-﻿
-namespace KeyVox.Engine.Ai;
+﻿namespace KeyVox.Engine.Ai;
 
 public interface IOpenAiClient
 {

@@ -1,5 +1,4 @@
-﻿
-using OpenAI;
+﻿using OpenAI;
 using OpenAI.Chat;
 
 namespace KeyVox.Engine.Ai.Providers;
@@ -9,10 +8,12 @@ public class AzureOpenAiClient : IOpenAiClient
     private readonly string _uri;
     private readonly string _apiKey;
     private OpenAIClient _client;
+
     public AzureOpenAiClient()
     {
         _uri = Environment.GetEnvironmentVariable("KEYVOX_AZ_AI_URL") ?? throw new ArgumentNullException(nameof(_uri));
-        _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_AI_API_KEY") ?? throw new ArgumentNullException(nameof(_apiKey));
+        _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_AI_API_KEY") ??
+                  throw new ArgumentNullException(nameof(_apiKey));
     }
 
     public async Task<string> ChatAsync(string snippet, string request)
@@ -24,13 +25,11 @@ public class AzureOpenAiClient : IOpenAiClient
             apiVersion: "2023-08-01-preview");
         _client = new OpenAIClient(auth, settings);
 
-
         var messages = new List<Message>
-    {
-        new Message(Role.System,Prompts.SystemPrompt),
-        new Message(Role.User, Prompts.UserPrompt(snippet, request))
-    };
-
+        {
+            new(Role.System, Prompts.SystemPrompt),
+            new(Role.User, Prompts.UserPrompt(snippet, request))
+        };
 
         try
         {
@@ -47,6 +46,5 @@ public class AzureOpenAiClient : IOpenAiClient
         {
             return ex.Message;
         }
-
     }
 }

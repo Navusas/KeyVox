@@ -6,7 +6,6 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
 {
     public class AzureContinousSpeechToTextClient : IDisposable
     {
-
         private SpeechRecognizer _recognizer;
         private StringBuilder _finalResultBuilder;
 
@@ -14,13 +13,11 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
         {
             _recognizer = new SpeechRecognizer(speechConfig);
             _finalResultBuilder = new();
-
         }
 
 
         public async Task StartStream(Action<string> TextRecognized)
         {
-
             _recognizer.Recognized += (s, e) =>
             {
                 if (e.Result.Reason == ResultReason.RecognizedSpeech)
@@ -37,7 +34,6 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
                 }
             };
             await _recognizer!.StartContinuousRecognitionAsync();
-
         }
 
         public async Task<string> StopStream()

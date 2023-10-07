@@ -14,8 +14,10 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
 
         public AzureSpeechToTextClient()
         {
-            _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_S2T_API_KEY") ?? throw new ArgumentNullException(nameof(_apiKey));
-            _region = Environment.GetEnvironmentVariable("KEYVOX_AZ_S2T_REGION") ?? throw new ArgumentNullException(nameof(_region));
+            _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_S2T_API_KEY") ??
+                      throw new ArgumentNullException(nameof(_apiKey));
+            _region = Environment.GetEnvironmentVariable("KEYVOX_AZ_S2T_REGION") ??
+                      throw new ArgumentNullException(nameof(_region));
         }
 
         /// <summary>
@@ -61,6 +63,5 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
             }
             else return string.Empty;
         }
-
     }
 }
