@@ -14,66 +14,68 @@ namespace KeyVox.OsSpecific.Windows.App
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
+            using var icon = new NotifyIcon();
+            icon.Icon = SystemIcons.Hand;
+            icon.Visible = true;
+            icon.ContextMenuStrip = new ContextMenuStrip();
+            icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
 
-            using (NotifyIcon icon = new NotifyIcon())
-            {
-                icon.Icon = SystemIcons.Shield; // Use your custom icon here.
-                icon.Visible = true;
-                icon.ContextMenuStrip = new ContextMenuStrip();
-                icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
+            using var keyboardAsync = Capture.Global.KeyboardAsync();
+            var hotkeyListener = new KeyChordEventSource(keyboardAsync, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
+            hotkeyListener.Triggered += (x, y) => { Listener_Triggered(keyboardAsync, x, y); };
+            hotkeyListener.Reset_On_Parent_EnabledChanged = false;
+            hotkeyListener.Enabled = true;
 
-                using (var Keyboard = Capture.Global.KeyboardAsync())
-                {
-                    var Listener = new KeyChordEventSource(Keyboard, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
-                    Listener.Triggered += (x, y) => Listener_Triggered(Keyboard, x, y);
-                    Listener.Reset_On_Parent_EnabledChanged = false;
-                    Listener.Enabled = true;
-
-                    Application.Run();
-                }
-            }
+            Application.Run();
         }
 
-        private static async void Listener_Triggered(IKeyboardEventSource Keyboard, object sender, KeyChordEventArgs e)
+        private static async void Listener_Triggered(IKeyboardEventSource keyboard, object sender, KeyChordEventArgs e)
         {
             await Simulate.Events()
                 .Release(KeyCode.A, KeyCode.LControlKey, KeyCode.LShiftKey)
                 .Invoke();
 
-            var captureSelection = await CaptureCurrentSelection(Keyboard);
+            var captureSelection = await CaptureCurrentSelection(keyboard);
+            await RevertChangesIfMade(keyboard, captureSelection);
+            MessageBox.Show(captureSelection);
+        }
 
+        private static async Task RevertChangesIfMade(IKeyboardEventSource keyboard, string previousSelection)
+        {
             // wait very short amount of time. In case we replaced text,
-
             await Task.Delay(20);
-            var captureSelectionTwice = await CaptureCurrentSelection(Keyboard);
-            if (captureSelection != captureSelectionTwice)
+            
+            // capture again, and if we replaced the text, then do CTRL+Z (undo)
+            var captureSelectionTwice = await CaptureCurrentSelection(keyboard);
+            if (previousSelection != captureSelectionTwice)
             {
                 await Simulate.Events()
                     .ClickChord(KeyCode.LControl, KeyCode.Z)
                     .Wait(10)
                     .Invoke();
             }
-            MessageBox.Show(captureSelection);
         }
 
-        private static async Task<string> CaptureCurrentSelection(IKeyboardEventSource Keyboard)
+        private static async Task<string> CaptureCurrentSelection(IKeyboardEventSource keyboard)
         {
-            IDataObject clipboardBackup = Clipboard.GetDataObject(); // Backup current clipboard
-            string initialClipboardText = Clipboard.GetText();
+            var clipboardBackup = Clipboard.GetDataObject(); // Backup current clipboard
+            var initialClipboardText = Clipboard.GetText();
 
-            using (Keyboard.Suspend())
+            using (keyboard.Suspend())
             {
                 await Simulate.Events()
                     .ClickChord(KeyCode.LControl, KeyCode.C)
                     .Wait(10)
                     .Invoke();
             }
+
             string selectedText;
-            int retries = 40;
+            var retries = 100;
 
             do
             {
-                await Task.Delay(50);
+                await Task.Delay(10);
                 selectedText = Clipboard.GetText();
             } while (selectedText == initialClipboardText && --retries > 0);
 
