@@ -46,7 +46,7 @@ namespace KeyVox.OsSpecific.Windows.App
             // {
                 await Simulate.Events()
                     .Release(KeyCode.A)
-                    // .Wait(1)
+                    .Wait(1)
                     .Invoke();
                 
                 // await Task.Delay(100);
