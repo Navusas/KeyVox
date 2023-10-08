@@ -44,7 +44,6 @@ namespace KeyVox.Engine.SpeechRecognition.Providers
 
         public async void Dispose()
         {
-            Console.WriteLine("Disposing resources.");
             GC.SuppressFinalize(this);
             await _recognizer.StopContinuousRecognitionAsync();
             _recognizer.Dispose();

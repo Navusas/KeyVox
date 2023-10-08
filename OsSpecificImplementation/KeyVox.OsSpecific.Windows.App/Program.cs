@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Events.Sources;
@@ -38,7 +39,40 @@ namespace KeyVox.OsSpecific.Windows.App
 
             var captureSelection = await CaptureCurrentSelection(keyboard);
             await RevertChangesIfMade(keyboard, captureSelection);
-            MessageBox.Show(captureSelection);
+
+            await StartKeyVoxApp(captureSelection);
+        }
+
+        private static async Task StartKeyVoxApp(string userSelection)
+        {
+            // Define the path to the KeyVox.Engine.Cli executable
+            var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var cliExePath = Path.Combine(appDirectory, "../../../../../release/KeyVox.Engine.Cli.exe");
+
+            // Ensure the path is correct and the file exists
+            if (!File.Exists(cliExePath))
+            {
+                throw new Exception($"Executable not found: {cliExePath}");
+            }
+
+            var sanitizedArg = EscapeDoubleQuotes(userSelection);
+            var arguments = $"--userQuery {sanitizedArg}"; // replace with your actual arguments
+
+            // Start the KeyVox.Engine.Cli app
+            var processStartInfo = new ProcessStartInfo(cliExePath, arguments)
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = new Process();
+            process.StartInfo = processStartInfo;
+
+            process.Start();
+            
+            // Wait for the KeyVox.Engine.Cli app to finish
+            await process.WaitForExitAsync();
         }
 
         private static async Task RevertChangesIfMade(IKeyboardEventSource keyboard, string previousSelection)
@@ -86,6 +120,13 @@ namespace KeyVox.OsSpecific.Windows.App
             }
 
             return selectedText;
+        }
+        
+        private static string EscapeDoubleQuotes(string arg)
+        {
+            // Check for already escaped quotes and avoid double-escaping them
+            arg = arg.Replace("\\\"", "\"").Replace("\"", "\\\"");
+            return "\"" + arg + "\"";
         }
     }
 }
