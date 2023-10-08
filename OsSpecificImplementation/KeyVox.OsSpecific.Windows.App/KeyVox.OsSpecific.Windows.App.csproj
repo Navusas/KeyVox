@@ -17,4 +17,8 @@
     <PackageReference Include="WindowsInput" Version="6.4.1" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE;DEVELOPMENT</DefineConstants>
+  </PropertyGroup>
+
 </Project>

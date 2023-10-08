@@ -45,9 +45,14 @@ namespace KeyVox.OsSpecific.Windows.App
 
         private static async Task StartKeyVoxApp(string userSelection)
         {
+            var path = "KeyVox.Engine.Cli.exe";
+            #if DEVELOPMENT
+                path = "../../../../../release/KeyVox.Engine.Cli.exe";
+            #endif
+            
             // Define the path to the KeyVox.Engine.Cli executable
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            var cliExePath = Path.Combine(appDirectory, "../../../../../release/KeyVox.Engine.Cli.exe");
+            var cliExePath = Path.GetFullPath(Path.Combine(appDirectory, path));
 
             // Ensure the path is correct and the file exists
             if (!File.Exists(cliExePath))
@@ -56,24 +61,23 @@ namespace KeyVox.OsSpecific.Windows.App
             }
 
             var sanitizedArg = EscapeDoubleQuotes(userSelection);
-            var arguments = $"--userQuery {sanitizedArg}"; // replace with your actual arguments
+            var arguments = $"/k \"\"{cliExePath}\" --userQuery {sanitizedArg}\"";
 
             // Start the KeyVox.Engine.Cli app
-            var processStartInfo = new ProcessStartInfo(cliExePath, arguments)
+            var processStartInfo = new ProcessStartInfo("cmd.exe", arguments)
             {
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
+                UseShellExecute = true
             };
 
             using var process = new Process();
             process.StartInfo = processStartInfo;
 
             process.Start();
-            
-            // Wait for the KeyVox.Engine.Cli app to finish
+    
+            // Wait for the cmd process (and thus KeyVox.Engine.Cli app) to finish
             await process.WaitForExitAsync();
         }
+
 
         private static async Task RevertChangesIfMade(IKeyboardEventSource keyboard, string previousSelection)
         {
