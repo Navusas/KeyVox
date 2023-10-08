@@ -46,7 +46,7 @@ namespace KeyVox.OsSpecific.Windows.App
             // {
                 await Simulate.Events()
                     .Release(KeyCode.A)
-                    // .Wait(100)
+                    // .Wait(1)
                     .Invoke();
                 
                 // await Task.Delay(100);
@@ -58,7 +58,7 @@ namespace KeyVox.OsSpecific.Windows.App
 
             var captureSelection = await CaptureCurrentSelection(keyboard);
             var tempFile = StoreSelectedContextInTempFile(captureSelection);
-            MessageBox.Show(tempFile);
+            // MessageBox.Show(tempFile);
             await StartKeyVoxApp(tempFile);
         }
 

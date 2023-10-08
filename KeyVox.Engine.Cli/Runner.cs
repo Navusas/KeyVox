@@ -33,12 +33,20 @@ public static class Runner
         Console.WriteLine("[KeyVox]: Asking AI...");
         
         var result = await openAi.ChatAsync(userQuery,finalizedSpeechResult);
-        var functionCallArgs = JsonSerializer.Deserialize<Prompts.AssistantResponseFuncArgs>(result);
-        if (functionCallArgs?.Comments is not null)
+        try 
         {
-            Console.WriteLine($"[KeyVox]: AI comments:\n############################\n{functionCallArgs?.Comments}\n############################");
+            var functionCallArgs = JsonSerializer.Deserialize<Prompts.AssistantResponseFuncArgs>(result);
+            if (functionCallArgs?.Context is not null)
+            {
+                Console.WriteLine($"[KeyVox]: AI comments:\n############################\n{functionCallArgs?.Context}\n############################");
+            }
+            Console.WriteLine($"[KeyVox]: AI snippet response:\n############################\n{functionCallArgs?.ResponseSnippet}\n############################");
         }
-        Console.WriteLine($"[KeyVox]: AI snippet response:\n############################\n{functionCallArgs?.ResponseSnippet}\n############################");
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+            Console.WriteLine($"Problematic JSON: {result}");
+        }
     }
     
     private static void UpdateLastLine(string newText)

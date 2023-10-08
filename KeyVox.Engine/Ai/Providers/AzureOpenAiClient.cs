@@ -21,7 +21,7 @@ public class AzureOpenAiClient : IOpenAiClient
         var auth = new OpenAIAuthentication(_apiKey);
         var settings = new OpenAIClientSettings(
             resourceName: "redgate-ai",
-            deploymentId: "gpt35-16k",
+            deploymentId: "gpt4-32",
             apiVersion: "2023-08-01-preview");
         _client = new OpenAIClient(auth, settings);
 
@@ -36,7 +36,7 @@ public class AzureOpenAiClient : IOpenAiClient
             var chatRequest = new ChatRequest(messages,
                 functions: new[] { Prompts.KeyVoxAssistantFunction },
                 functionCall: Prompts.FunctionName,
-                model: "gpt-35-turbo-16k");
+                model: "gpt-4-32k");
 
             var result = await _client.ChatEndpoint.GetCompletionAsync(chatRequest);
             var funcCallResult = result.FirstChoice.Message.Function.Arguments.ToString();
