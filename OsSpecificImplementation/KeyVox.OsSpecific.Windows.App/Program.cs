@@ -22,28 +22,35 @@ namespace KeyVox.OsSpecific.Windows.App
             icon.ContextMenuStrip = new ContextMenuStrip();
             icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
 
-            using var keyboardAsync = Capture.Global.KeyboardAsync();
-            var hotkeyListener = new KeyChordEventSource(keyboardAsync, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
-            hotkeyListener.Triggered += (x, y) => { Listener_Triggered(keyboardAsync, x, y); };
+            using var keyboard = Capture.Global.Keyboard();
+            var hotkeyListener = new KeyChordEventSource(keyboard, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
+            hotkeyListener.Triggered += (x, y) => { Listener_Triggered(keyboard, x, y); };
             hotkeyListener.Reset_On_Parent_EnabledChanged = false;
             hotkeyListener.Enabled = true;
 
             Application.Run();
         }
 
-        private static async void Listener_Triggered(IKeyboardEventSource keyboard, object sender, KeyChordEventArgs e)
+        private static void Listener_Triggered(IKeyboardEventSource keyboard, object sender, KeyChordEventArgs e)
         {
-            await Simulate.Events()
-                .Release(KeyCode.A, KeyCode.LControlKey, KeyCode.LShiftKey)
-                .Invoke();
+            var releaseAResult = Simulate.Events()
+                .Release(KeyCode.A)
+                .Invoke()
+                .ConfigureAwait(false).GetAwaiter().GetResult();
 
-            var captureSelection = await CaptureCurrentSelection(keyboard);
-            await RevertChangesIfMade(keyboard, captureSelection);
+            var releaseCtrlResult = Simulate.Events()
+                    .Release(KeyCode.LControlKey, KeyCode.LShiftKey)
+                    .Invoke()
+                    .ConfigureAwait(false).GetAwaiter().GetResult();
 
-            await StartKeyVoxApp(captureSelection);
+            var captureSelection = CaptureCurrentSelection(keyboard);
+            MessageBox.Show(captureSelection);
+            // await RevertChangesIfMade(keyboard, captureSelection);
+            //
+            StartKeyVoxApp(captureSelection);
         }
 
-        private static async Task StartKeyVoxApp(string userSelection)
+        private static void StartKeyVoxApp(string userSelection)
         {
             var path = "KeyVox.Engine.Cli.exe";
             #if DEVELOPMENT
@@ -75,37 +82,38 @@ namespace KeyVox.OsSpecific.Windows.App
             process.Start();
     
             // Wait for the cmd process (and thus KeyVox.Engine.Cli app) to finish
-            await process.WaitForExitAsync();
+            process.WaitForExit();
         }
 
 
-        private static async Task RevertChangesIfMade(IKeyboardEventSource keyboard, string previousSelection)
+        private static void RevertChangesIfMade(IKeyboardEventSource keyboard, string previousSelection)
         {
             // wait very short amount of time. In case we replaced text,
-            await Task.Delay(20);
+            Task.Delay(20);
             
             // capture again, and if we replaced the text, then do CTRL+Z (undo)
-            var captureSelectionTwice = await CaptureCurrentSelection(keyboard);
+            var captureSelectionTwice = CaptureCurrentSelection(keyboard);
             if (previousSelection != captureSelectionTwice)
             {
-                await Simulate.Events()
+                Simulate.Events()
                     .ClickChord(KeyCode.LControl, KeyCode.Z)
                     .Wait(10)
-                    .Invoke();
-            }
+                    .Invoke()
+                    .ConfigureAwait(false).GetAwaiter().GetResult();            }
         }
 
-        private static async Task<string> CaptureCurrentSelection(IKeyboardEventSource keyboard)
+        private static string CaptureCurrentSelection(IKeyboardEventSource keyboard)
         {
             var clipboardBackup = Clipboard.GetDataObject(); // Backup current clipboard
             var initialClipboardText = Clipboard.GetText();
 
             using (keyboard.Suspend())
             {
-                await Simulate.Events()
+                Simulate.Events()
                     .ClickChord(KeyCode.LControl, KeyCode.C)
                     .Wait(10)
-                    .Invoke();
+                    .Invoke()
+                    .ConfigureAwait(false).GetAwaiter().GetResult();
             }
 
             string selectedText;
@@ -113,7 +121,7 @@ namespace KeyVox.OsSpecific.Windows.App
 
             do
             {
-                await Task.Delay(10);
+                Task.Delay(10);
                 selectedText = Clipboard.GetText();
             } while (selectedText == initialClipboardText && --retries > 0);
 
