@@ -15,8 +15,10 @@ public class Program
 
     private static void RunWithOptions(Options opts)
     {
-        Console.WriteLine($"[KeyVox]: Copied context:\n############################\n{opts.UserQuery}\n############################");
-        Task.Run(() => Runner.Start(opts.UserQuery)).Wait();
+        var userQuery = File.ReadAllText(opts.ContextFile);
+        Console.WriteLine($"[KeyVox]: Copied context:\n############################\n{userQuery}\n############################");
+        Task.Run(() => Runner.Start(userQuery)).Wait();
+        File.Delete(opts.ContextFile);
     }
 
     private static void HandleParseError(IEnumerable<Error> errs)

@@ -4,6 +4,6 @@ using CommandLine;
 
 public class Options
 {
-    [Option('q', "userQuery", Required = true, HelpText = "User query to process.")]
-    public string UserQuery { get; set; }
+    [Option('f', "contextFile", Required = true, HelpText = "File containing user selected context to process.")]
+    public string ContextFile { get; set; }
 }

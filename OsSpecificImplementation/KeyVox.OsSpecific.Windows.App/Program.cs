@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Events.Sources;
@@ -15,48 +16,116 @@ namespace KeyVox.OsSpecific.Windows.App
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
+
             using var icon = new NotifyIcon();
             icon.Icon = SystemIcons.Hand;
             icon.Visible = true;
             icon.ContextMenuStrip = new ContextMenuStrip();
             icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
 
-            using var keyboard = Capture.Global.Keyboard();
-            var hotkeyListener = new KeyChordEventSource(keyboard, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
-            hotkeyListener.Triggered += (x, y) => { Listener_Triggered(keyboard, x, y); };
+            var keyboard = Capture.Global.Keyboard();
+            var hotkeyListener =
+                new KeyChordEventSource(keyboard, new ChordClick(KeyCode.LControl, KeyCode.LShift, KeyCode.A));
+            hotkeyListener.Triggered += async (x, y) => { await Listener_Triggered(keyboard, x, y); };
             hotkeyListener.Reset_On_Parent_EnabledChanged = false;
             hotkeyListener.Enabled = true;
 
             Application.Run();
+
+
+            Application.ApplicationExit += (sender, args) =>
+            {
+                // clean-up
+                keyboard.Dispose();
+            };
         }
 
-        private static void Listener_Triggered(IKeyboardEventSource keyboard, object sender, KeyChordEventArgs e)
+        private static async Task Listener_Triggered(IKeyboardEventSource keyboard, object? sender, KeyChordEventArgs e)
         {
-            var releaseAResult = Simulate.Events()
-                .Release(KeyCode.A)
-                .Invoke()
-                .ConfigureAwait(false).GetAwaiter().GetResult();
+            // using (keyboard.Suspend())
+            // {
+                await Simulate.Events()
+                    .Release(KeyCode.A)
+                    // .Wait(100)
+                    .Invoke();
+                
+                // await Task.Delay(100);
 
-            var releaseCtrlResult = Simulate.Events()
+                await Simulate.Events()
                     .Release(KeyCode.LControlKey, KeyCode.LShiftKey)
-                    .Invoke()
-                    .ConfigureAwait(false).GetAwaiter().GetResult();
+                    .Invoke();
+            // }
 
-            var captureSelection = CaptureCurrentSelection(keyboard);
-            MessageBox.Show(captureSelection);
-            // await RevertChangesIfMade(keyboard, captureSelection);
-            //
-            StartKeyVoxApp(captureSelection);
+            var captureSelection = await CaptureCurrentSelection(keyboard);
+            var tempFile = StoreSelectedContextInTempFile(captureSelection);
+            MessageBox.Show(tempFile);
+            await StartKeyVoxApp(tempFile);
         }
 
-        private static void StartKeyVoxApp(string userSelection)
+        private static async Task<string> CaptureCurrentSelection(IKeyboardEventSource keyboard)
+        {
+            IDataObject? clipboardBackup = null;
+            string selectedText;
+            try
+            {
+                clipboardBackup = Clipboard.GetDataObject(); // Backup current clipboard
+
+                using (keyboard.Suspend())
+                {
+                    await Simulate.Events()
+                        .ClickChord(KeyCode.LControl, KeyCode.C)
+                        .Invoke();
+                
+                    await Task.Delay(200);
+                }
+
+                selectedText = GetClipboardTextWithRetry();            }
+            finally
+            {
+                if (clipboardBackup != null)
+                {
+                    Clipboard.SetDataObject(clipboardBackup, true, 20, 100);
+                }
+            }
+
+            return selectedText;
+        }
+        
+        private static string GetClipboardTextWithRetry(int retryCount = 20)
+        {
+            while (retryCount-- > 0)
+            {
+                try
+                {
+                    if (Clipboard.ContainsText())
+                    {
+                        return Clipboard.GetText();
+                    }
+                }
+                catch (ExternalException)
+                {
+                    // Wait and retry
+                    Thread.Sleep(100);
+                }
+            }
+
+            return string.Empty; // let's assume that no context has been selected
+        }
+
+        private static string StoreSelectedContextInTempFile(string userQuery)
+        {
+            var tempFilePath = Path.GetTempFileName();
+            File.WriteAllText(tempFilePath, userQuery);
+            return tempFilePath;
+        }
+
+        private static async Task StartKeyVoxApp(string userQueryFilePath)
         {
             var path = "KeyVox.Engine.Cli.exe";
-            #if DEVELOPMENT
-                path = "../../../../../release/KeyVox.Engine.Cli.exe";
-            #endif
-            
+#if DEVELOPMENT
+            path = "../../../../../release/KeyVox.Engine.Cli.exe";
+#endif
+
             // Define the path to the KeyVox.Engine.Cli executable
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var cliExePath = Path.GetFullPath(Path.Combine(appDirectory, path));
@@ -67,8 +136,7 @@ namespace KeyVox.OsSpecific.Windows.App
                 throw new Exception($"Executable not found: {cliExePath}");
             }
 
-            var sanitizedArg = EscapeDoubleQuotes(userSelection);
-            var arguments = $"/k \"\"{cliExePath}\" --userQuery {sanitizedArg}\"";
+            var arguments = $"/k \"{cliExePath} --contextFile {userQueryFilePath}\"";
 
             // Start the KeyVox.Engine.Cli app
             var processStartInfo = new ProcessStartInfo("cmd.exe", arguments)
@@ -80,65 +148,9 @@ namespace KeyVox.OsSpecific.Windows.App
             process.StartInfo = processStartInfo;
 
             process.Start();
-    
+
             // Wait for the cmd process (and thus KeyVox.Engine.Cli app) to finish
-            process.WaitForExit();
-        }
-
-
-        private static void RevertChangesIfMade(IKeyboardEventSource keyboard, string previousSelection)
-        {
-            // wait very short amount of time. In case we replaced text,
-            Task.Delay(20);
-            
-            // capture again, and if we replaced the text, then do CTRL+Z (undo)
-            var captureSelectionTwice = CaptureCurrentSelection(keyboard);
-            if (previousSelection != captureSelectionTwice)
-            {
-                Simulate.Events()
-                    .ClickChord(KeyCode.LControl, KeyCode.Z)
-                    .Wait(10)
-                    .Invoke()
-                    .ConfigureAwait(false).GetAwaiter().GetResult();            }
-        }
-
-        private static string CaptureCurrentSelection(IKeyboardEventSource keyboard)
-        {
-            var clipboardBackup = Clipboard.GetDataObject(); // Backup current clipboard
-            var initialClipboardText = Clipboard.GetText();
-
-            using (keyboard.Suspend())
-            {
-                Simulate.Events()
-                    .ClickChord(KeyCode.LControl, KeyCode.C)
-                    .Wait(10)
-                    .Invoke()
-                    .ConfigureAwait(false).GetAwaiter().GetResult();
-            }
-
-            string selectedText;
-            var retries = 100;
-
-            do
-            {
-                Task.Delay(10);
-                selectedText = Clipboard.GetText();
-            } while (selectedText == initialClipboardText && --retries > 0);
-
-            // Restore original clipboard
-            if (clipboardBackup != null)
-            {
-                Clipboard.SetDataObject(clipboardBackup, true);
-            }
-
-            return selectedText;
-        }
-        
-        private static string EscapeDoubleQuotes(string arg)
-        {
-            // Check for already escaped quotes and avoid double-escaping them
-            arg = arg.Replace("\\\"", "\"").Replace("\"", "\\\"");
-            return "\"" + arg + "\"";
+            await process.WaitForExitAsync();
         }
     }
 }
