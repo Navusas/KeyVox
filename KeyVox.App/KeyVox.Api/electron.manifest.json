@@ -1,0 +1,8 @@
+{
+    "executable": "YourProjectName.dll",
+    "splashscreen": {},
+    "singleInstance": false,
+    "logging": false,
+    "build": {},
+    "customScript": null
+  }
