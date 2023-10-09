@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVox.Engine", "KeyVox.Eng
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVoxApi", "KeyVox.Api\KeyVoxApi.csproj", "{E048670D-1677-4A56-9B79-A8DC2E1D0942}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OsSpecificImplementation", "OsSpecificImplementation", "{07868FF4-2DD6-43F6-8876-1639C2468D8D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Startups", "Startups", "{07868FF4-2DD6-43F6-8876-1639C2468D8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyVox.OsSpecific.Windows.App", "OsSpecificImplementation\KeyVox.OsSpecific.Windows.App\KeyVox.OsSpecific.Windows.App.csproj", "{A1F7CF8D-9058-4710-BA56-AB5F64F72911}"
 EndProject
@@ -18,9 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyVox.Engine.Cli", "KeyVox.Engine.Cli\KeyVox.Engine.Cli.csproj", "{3BB93A12-4EE8-4C5A-8491-C685C5655356}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KeyVox.App", "KeyVox.App", "{043FC135-0853-4E11-ADC5-F9D9F1187860}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatBot", "ChatBot", "{043FC135-0853-4E11-ADC5-F9D9F1187860}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyVoxApi", "KeyVox.App\KeyVox.Api\KeyVoxApi.csproj", "{44E96002-68C4-4766-8869-BEC810FC6648}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBot.Host", "KeyVox.App\KeyVox.Api\ChatBot.Host.csproj", "{44E96002-68C4-4766-8869-BEC810FC6648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

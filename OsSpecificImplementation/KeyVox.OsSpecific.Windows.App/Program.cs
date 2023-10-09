@@ -19,7 +19,7 @@ namespace KeyVox.OsSpecific.Windows.App
             Application.SetCompatibleTextRenderingDefault(false);
 
             using var icon = new NotifyIcon();
-            var iconStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KeyVox.OsSpecific.Windows.App.assets.logo.ico");
+            var iconStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KeyVox.Startups.Windows.assets.logo.ico");
             if (iconStream != null)
             {
                 var appIcon = new Icon(iconStream);
