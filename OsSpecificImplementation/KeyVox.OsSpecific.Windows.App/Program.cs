@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsInput;
@@ -18,7 +19,13 @@ namespace KeyVox.OsSpecific.Windows.App
             Application.SetCompatibleTextRenderingDefault(false);
 
             using var icon = new NotifyIcon();
-            icon.Icon = SystemIcons.Hand;
+            var iconStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KeyVox.OsSpecific.Windows.App.assets.logo.ico");
+            if (iconStream != null)
+            {
+                var appIcon = new Icon(iconStream);
+                icon.Icon = appIcon;
+            }
+
             icon.Visible = true;
             icon.ContextMenuStrip = new ContextMenuStrip();
             icon.ContextMenuStrip.Items.Add("Exit", null, (s, e) => Application.Exit());
@@ -44,16 +51,16 @@ namespace KeyVox.OsSpecific.Windows.App
         {
             // using (keyboard.Suspend())
             // {
-                await Simulate.Events()
-                    .Release(KeyCode.A)
-                    .Wait(1)
-                    .Invoke();
-                
-                // await Task.Delay(100);
+            await Simulate.Events()
+                .Release(KeyCode.A)
+                .Wait(1)
+                .Invoke();
 
-                await Simulate.Events()
-                    .Release(KeyCode.LControlKey, KeyCode.LShiftKey)
-                    .Invoke();
+            // await Task.Delay(100);
+
+            await Simulate.Events()
+                .Release(KeyCode.LControlKey, KeyCode.LShiftKey)
+                .Invoke();
             // }
 
             var captureSelection = await CaptureCurrentSelection(keyboard);
@@ -75,11 +82,12 @@ namespace KeyVox.OsSpecific.Windows.App
                     await Simulate.Events()
                         .ClickChord(KeyCode.LControl, KeyCode.C)
                         .Invoke();
-                
+
                     await Task.Delay(200);
                 }
 
-                selectedText = GetClipboardTextWithRetry();            }
+                selectedText = GetClipboardTextWithRetry();
+            }
             finally
             {
                 if (clipboardBackup != null)
@@ -90,7 +98,7 @@ namespace KeyVox.OsSpecific.Windows.App
 
             return selectedText;
         }
-        
+
         private static string GetClipboardTextWithRetry(int retryCount = 20)
         {
             while (retryCount-- > 0)

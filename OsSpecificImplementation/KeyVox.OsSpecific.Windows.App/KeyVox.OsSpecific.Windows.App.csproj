@@ -17,6 +17,15 @@
     <PackageReference Include="WindowsInput" Version="6.4.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="assets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="assets\logo.ico" />
+    <EmbeddedResource Include="assets\logo.ico" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE;DEVELOPMENT</DefineConstants>
   </PropertyGroup>
