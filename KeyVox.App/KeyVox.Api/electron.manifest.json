@@ -1,5 +1,5 @@
 {
-    "executable": "YourProjectName.dll",
+    "executable": "KeyVoxApi",
     "splashscreen": {},
     "singleInstance": false,
     "logging": false,

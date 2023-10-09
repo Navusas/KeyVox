@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyVox.Engine.Cli", "KeyVox.Engine.Cli\KeyVox.Engine.Cli.csproj", "{3BB93A12-4EE8-4C5A-8491-C685C5655356}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KeyVox.App", "KeyVox.App", "{043FC135-0853-4E11-ADC5-F9D9F1187860}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyVoxApi", "KeyVox.App\KeyVox.Api\KeyVoxApi.csproj", "{44E96002-68C4-4766-8869-BEC810FC6648}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,12 +80,25 @@ Global
 		{3BB93A12-4EE8-4C5A-8491-C685C5655356}.Release|x64.Build.0 = Release|Any CPU
 		{3BB93A12-4EE8-4C5A-8491-C685C5655356}.Release|x86.ActiveCfg = Release|Any CPU
 		{3BB93A12-4EE8-4C5A-8491-C685C5655356}.Release|x86.Build.0 = Release|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Debug|x64.Build.0 = Debug|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Debug|x86.Build.0 = Debug|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Release|x64.ActiveCfg = Release|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Release|x64.Build.0 = Release|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Release|x86.ActiveCfg = Release|Any CPU
+		{44E96002-68C4-4766-8869-BEC810FC6648}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A1F7CF8D-9058-4710-BA56-AB5F64F72911} = {07868FF4-2DD6-43F6-8876-1639C2468D8D}
+		{44E96002-68C4-4766-8869-BEC810FC6648} = {043FC135-0853-4E11-ADC5-F9D9F1187860}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B2644C0F-E556-4264-8DF0-407305C2BB09}
