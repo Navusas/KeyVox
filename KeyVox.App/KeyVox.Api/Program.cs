@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
+using ElectronNET.API;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +43,7 @@ if (HybridSupport.IsElectronActive)
     CreateElectronWindow();
 }
 
-private async void CreateElectronWindow()
+async void CreateElectronWindow()
 {
     var window = await Electron.WindowManager.CreateWindowAsync();
     window.OnReadyToShow += () => window.Show();
