@@ -2,7 +2,8 @@
 using KeyVox.Engine.Ai;
 using KeyVox.Engine.Ai.Providers;
 using KeyVox.Engine.SpeechRecognition;
-using KeyVox.Engine.SpeechRecognition.Providers;
+using KeyVox.Engine.SpeechRecognition.SpeechToText;
+using KeyVox.Engine.SpeechRecognition.SpeechToText.Providers;
 
 namespace KeyVox.Engine.Cli;
 

@@ -1,8 +1,7 @@
-﻿using System.Reactive.Subjects;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CognitiveServices.Speech;
 
-namespace KeyVox.Engine.SpeechRecognition.Providers
+namespace KeyVox.Engine.SpeechRecognition.SpeechToText.Providers
 {
     public class AzureContinousSpeechToTextClient : IDisposable
     {
