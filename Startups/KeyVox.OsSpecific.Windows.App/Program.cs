@@ -18,7 +18,8 @@ namespace KeyVox.OsSpecific.Windows.App
 
             if (!isNewInstance)
             {
-                Console.WriteLine("An instance of the application is already running.");
+                MessageBox.Show("An instance of the application is already running.", "[KeyVox] Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
                 return;
             }
