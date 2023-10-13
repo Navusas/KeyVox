@@ -1,43 +1,58 @@
 ﻿using OpenAI;
-using OpenAI.Chat;
+using OpenAI.Managers;
+using OpenAI.ObjectModels.RequestModels;
 
 namespace KeyVox.Engine.Ai.Providers;
 
 public class AzureOpenAiClient : IOpenAiClient
 {
-    private readonly string _azureApikey;
-    private OpenAIClient _client;
+    private readonly OpenAIService _client;
 
     public AzureOpenAiClient(string azureApikey)
     {
-        _azureApikey = azureApikey;
+        _client = new OpenAIService(new OpenAiOptions()
+        {
+            ApiKey = azureApikey,
+            ApiVersion = "2023-08-01-preview",
+            DeploymentId = "gpt4-32",
+            ResourceName = "redgate-ai",
+            ProviderType = ProviderType.Azure
+        });
     }
 
     public async Task<string> ChatAsync(string snippet, string request)
     {
-        var auth = new OpenAIAuthentication(_azureApikey);
-        var settings = new OpenAIClientSettings(
-            resourceName: "redgate-ai",
-            deploymentId: "gpt4-32",
-            apiVersion: "2023-08-01-preview");
-        _client = new OpenAIClient(auth, settings);
-
-        var messages = new List<Message>
+        var chatRequest = new ChatCompletionCreateRequest()
         {
-            new(Role.System, Prompts.SystemPrompt),
-            new(Role.User, Prompts.UserPrompt(snippet, request))
+            Messages = new List<ChatMessage>
+            {
+                ChatMessage.FromSystem(Prompts.SystemPrompt),
+                ChatMessage.FromUser(Prompts.UserPrompt(snippet, request))
+            },
+            Model = "gpt-4-32k"
         };
 
         try
         {
-            var chatRequest = new ChatRequest(messages,
-                functions: new[] { Prompts.KeyVoxAssistantFunction },
-                functionCall: Prompts.FunctionName,
-                model: "gpt-4-32k");
+            var completionResult = await _client.ChatCompletion.CreateCompletion(chatRequest);
+            
+            if (completionResult.Successful)
+            {
+                var funcCallResult = completionResult.Choices.FirstOrDefault()?.Message.FunctionCall?.Arguments;
+                if (funcCallResult is null)
+                {
+                    throw new Exception("Function wasn't called");
+                }
 
-            var result = await _client.ChatEndpoint.GetCompletionAsync(chatRequest);
-            var funcCallResult = result.FirstChoice.Message.Function.Arguments.ToString();
-            return funcCallResult;
+                return funcCallResult;
+            }
+
+            if (completionResult.Error == null)
+            {
+                throw new Exception("Unknown Error");
+            }
+
+            return $"Error: [Code: {completionResult.Error.Code}]: {completionResult.Error.Message}";
         }
         catch (Exception ex)
         {

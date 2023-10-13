@@ -7,9 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Betalgo.OpenAI" Version="7.2.0" />
 		<PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.32.1" />
-		<PackageReference Include="OpenAI" Version="1.7.2" />
-		<PackageReference Include="OpenAI-DotNet" Version="7.0.9" />
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
 
