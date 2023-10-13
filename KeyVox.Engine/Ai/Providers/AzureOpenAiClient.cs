@@ -5,20 +5,17 @@ namespace KeyVox.Engine.Ai.Providers;
 
 public class AzureOpenAiClient : IOpenAiClient
 {
-    private readonly string _uri;
-    private readonly string _apiKey;
+    private readonly string _azureApikey;
     private OpenAIClient _client;
 
-    public AzureOpenAiClient()
+    public AzureOpenAiClient(string azureApikey)
     {
-        _uri = Environment.GetEnvironmentVariable("KEYVOX_AZ_AI_URL") ?? throw new ArgumentNullException(nameof(_uri));
-        _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_AI_API_KEY") ??
-                  throw new ArgumentNullException(nameof(_apiKey));
+        _azureApikey = azureApikey;
     }
 
     public async Task<string> ChatAsync(string snippet, string request)
     {
-        var auth = new OpenAIAuthentication(_apiKey);
+        var auth = new OpenAIAuthentication(_azureApikey);
         var settings = new OpenAIClientSettings(
             resourceName: "redgate-ai",
             deploymentId: "gpt4-32",
