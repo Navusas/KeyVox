@@ -1,8 +1,0 @@
-{
-    "executable": "KeyVoxApi",
-    "splashscreen": {},
-    "singleInstance": false,
-    "logging": false,
-    "build": {},
-    "customScript": null
-  }
