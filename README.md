@@ -14,14 +14,25 @@ Some details:
 - We use Azure OpenAI client (with ChatGPT-4 access, for now).
 
 
-## Setup
-Required environment variables:
-```
-# Speech-to-text service
-KEYVOX_AZ_S2T_API_KEY
-KEYVOX_AZ_S2T_REGION
+## Start
+**App works on Windows only, as of now**
 
-# OpenAI (Azure)
-KEYVOX_AZ_AI_URL
-KEYVOX_AZ_AI_API_KEY
+```
+# git clone repo
+...
+
+# Go inside cloned repo
+cd KeyVox/
+
+# Set environment variables
+# "KEYVOX_AZ_AI_API_KEY"
+# "KEYVOX_AZ_SPEECH_RECOGNITION_API_KEY"
+# "KEYVOX_AZ_SPEECH_RECOGNITION_REGION"
+
+# Run ./build.ps1
+./build.ps1
+
+# Run ./start.ps1
+./start.ps1
+
 ```
