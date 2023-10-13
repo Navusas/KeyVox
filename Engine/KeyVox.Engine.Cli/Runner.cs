@@ -48,24 +48,30 @@ public static class Runner
         Console.WriteLine($"[KeyVox]: You asked: '{finalizedSpeechResult}'");
         Console.WriteLine("[KeyVox]: Asking AI...");
 
-        var result = await openAi.ChatAsync(userQuery, finalizedSpeechResult);
-        try
-        {
-            var functionCallArgs = JsonSerializer.Deserialize<Prompts.AssistantResponseFuncArgs>(result);
-            if (functionCallArgs?.Context is not null)
-            {
-                Console.WriteLine(
-                    $"[KeyVox]: AI comments:\n############################\n{functionCallArgs?.Context}\n############################");
-            }
 
-            Console.WriteLine(
-                $"[KeyVox]: AI snippet response:\n############################\n{functionCallArgs?.ResponseSnippet}\n############################");
-        }
-        catch (JsonException ex)
+        await foreach (var response in openAi.StreamChatAsync(userQuery, finalizedSpeechResult))
         {
-            Console.WriteLine($"Error deserializing JSON: {ex.Message}");
-            Console.WriteLine($"Problematic JSON: {result}");
+            Console.WriteLine($"Streaming response: {response}");
         }
+        //
+        // var result = await openAi.ChatAsync(userQuery, finalizedSpeechResult);
+        // try
+        // {
+        //     var functionCallArgs = JsonSerializer.Deserialize<Prompts.AssistantResponseFuncArgs>(result);
+        //     if (functionCallArgs?.Context is not null)
+        //     {
+        //         Console.WriteLine(
+        //             $"[KeyVox]: AI comments:\n############################\n{functionCallArgs?.Context}\n############################");
+        //     }
+        //
+        //     Console.WriteLine(
+        //         $"[KeyVox]: AI snippet response:\n############################\n{functionCallArgs?.ResponseSnippet}\n############################");
+        // }
+        // catch (JsonException ex)
+        // {
+        //     Console.WriteLine($"Error deserializing JSON: {ex.Message}");
+        //     Console.WriteLine($"Problematic JSON: {result}");
+        // }
     }
 
     private static void UpdateLastLine(string newText)
