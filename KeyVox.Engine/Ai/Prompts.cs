@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
-using OpenAI.Chat;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using OpenAI.Builders;
+using OpenAI.ObjectModels.RequestModels;
+using OpenAI.ObjectModels.SharedModels;
 
 namespace KeyVox.Engine.Ai;
 
@@ -39,8 +41,8 @@ public static class Prompts
 
     public static readonly string FunctionName = "assistant_response";
 
-    public static readonly Function KeyVoxAssistantFunction = new(
-        FunctionName,
+    public static readonly FunctionDefinition KeyVoxAssistantFunctionDefinition =
+        new FunctionDefinitionBuilder(FunctionName,
         """
         Respond to the user's request pertaining to the provided snippet. Adhere to the following guidelines:
             - Always make actionable changes if the user's request specifies them.
@@ -51,27 +53,12 @@ public static class Prompts
             - Ensure the response is accurate, concise, and directly relevant to the user's request.
             - When in doubt or when faced with ambiguities, make educated assumptions but clearly indicate them in the 'context'.
             - Prioritize clarity and user comprehension in all responses.
-        """,
-        new JsonObject
-        {
-            ["type"] = "object",
-            ["properties"] = new JsonObject
-            {
-                ["snippet"] =
-                    new JsonObject
-                    {
-                        ["type"] = "string",
-                        ["description"] = "The actioned or altered version of the snippet based on the user's request."
-
-                    },
-                ["context"] = new JsonObject
-                {
-                    ["type"] = "string",
-                    ["description"] = "Explanatory remarks, clarifications, or reasons for the decisions made during snippet modifications. This is also where ambiguities or assumptions are noted."
-                },
-            },
-            ["required"] = new JsonArray { "snippet" }
-        });
+        """
+                )
+            .AddParameter("snippet", PropertyDefinition.DefineString("The actioned or altered version of the snippet based on the user's request."))
+            .AddParameter("context", PropertyDefinition.DefineString("Explanatory remarks, clarifications, or reasons for the decisions made during snippet modifications. This is also where ambiguities or assumptions are noted."))
+            .Validate()
+            .Build();
 
     public class AssistantResponseFuncArgs
     {
