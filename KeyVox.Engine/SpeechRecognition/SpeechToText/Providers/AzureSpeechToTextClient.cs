@@ -6,16 +6,14 @@ namespace KeyVox.Engine.SpeechRecognition.SpeechToText.Providers
     {
         private readonly string _apiKey;
         private readonly string _region;
-        private AzureContinousSpeechToTextClient? _continousSpeechToTextClient;
+        private AzureContinousSpeechToTextClient? _continuousSpeechToTextClient;
 
-        public event Action<string> TextRecognized;
+        public event Action<string>? TextRecognized;
 
-        public AzureSpeechToTextClient()
+        public AzureSpeechToTextClient(string apiKey, string region)
         {
-            _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_S2T_API_KEY") ??
-                      throw new ArgumentNullException(nameof(_apiKey));
-            _region = Environment.GetEnvironmentVariable("KEYVOX_AZ_S2T_REGION") ??
-                      throw new ArgumentNullException(nameof(_region));
+            _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+            _region = region ?? throw new ArgumentNullException(nameof(region));
         }
 
         /// <summary>
@@ -46,17 +44,17 @@ namespace KeyVox.Engine.SpeechRecognition.SpeechToText.Providers
         public async Task StartRecognitionStreamAsync()
         {
             var speechConfig = SpeechConfig.FromSubscription(_apiKey, _region);
-            _continousSpeechToTextClient = new AzureContinousSpeechToTextClient(speechConfig);
+            _continuousSpeechToTextClient = new AzureContinousSpeechToTextClient(speechConfig);
 
-            await _continousSpeechToTextClient.StartStream(TextRecognized);
+            await _continuousSpeechToTextClient.StartStream(TextRecognized);
         }
 
         public async Task<string> StopRecognitionStreamAsync()
         {
-            if (_continousSpeechToTextClient is not null)
+            if (_continuousSpeechToTextClient is not null)
             {
-                var result = await _continousSpeechToTextClient.StopStream();
-                _continousSpeechToTextClient.Dispose();
+                var result = await _continuousSpeechToTextClient.StopStream();
+                _continuousSpeechToTextClient.Dispose();
                 return result;
             }
             else return string.Empty;

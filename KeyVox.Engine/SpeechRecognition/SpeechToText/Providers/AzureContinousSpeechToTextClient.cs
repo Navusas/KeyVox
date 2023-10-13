@@ -15,7 +15,7 @@ namespace KeyVox.Engine.SpeechRecognition.SpeechToText.Providers
         }
 
 
-        public async Task StartStream(Action<string> TextRecognized)
+        public async Task StartStream(Action<string>? TextRecognized)
         {
             _recognizer.Recognized += (s, e) =>
             {

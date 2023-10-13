@@ -8,14 +8,12 @@ namespace KeyVox.Engine.SpeechRecognition.TextToSpeech.Providers;
         private readonly string _region;
         private AzureContinuousTextToSpeechClient? _continuousTextToSpeechClient;
 
-        public event Action<Stream> AudioStreamGenerated;
+        public event Action<Stream>? AudioStreamGenerated;
 
-        public AzureTextToSpeechClient()
+        public AzureTextToSpeechClient(string apiKey, string region)
         {
-            _apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_TTS_API_KEY") ??
-                      throw new ArgumentNullException(nameof(_apiKey));
-            _region = Environment.GetEnvironmentVariable("KEYVOX_AZ_TTS_REGION") ??
-                      throw new ArgumentNullException(nameof(_region));
+            _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+            _region = region ?? throw new ArgumentNullException(nameof(region));
         }
 
         public async Task<Stream> OneShotSpeechAsync(string text)

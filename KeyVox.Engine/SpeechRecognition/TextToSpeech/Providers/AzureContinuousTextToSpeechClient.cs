@@ -17,7 +17,7 @@ namespace KeyVox.Engine.SpeechRecognition.TextToSpeech.Providers
             _audioStream = new MemoryStream();
         }
 
-        public async Task StartStream(string text, Action<Stream> audioStreamGenerated)
+        public async Task StartStream(string text, Action<Stream>? audioStreamGenerated)
         {
             var pullStream = AudioOutputStream.CreatePullStream();
             var audioConfig = AudioConfig.FromStreamOutput(pullStream);
