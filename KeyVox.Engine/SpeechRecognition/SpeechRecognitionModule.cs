@@ -8,6 +8,12 @@ namespace KeyVox.Engine.SpeechRecognition;
 
 public static class SpeechRecognitionModule
 {
+    /// <summary>
+    /// Injects <seealso cref="ISpeechToTextClient"/> and <seealso cref="ITextToSpeechClient"/> alongside their compositor
+    /// <seealso cref="SpeechRecognitionClient"/>
+    /// </summary>
+    /// <param name="services"></param>
+    /// <exception cref="ArgumentException"></exception>
     static void AddSpeechRecognition(this IServiceCollection services)
     {
         var apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_SPEECH_RECOGNITION_API_KEY") ?? 
