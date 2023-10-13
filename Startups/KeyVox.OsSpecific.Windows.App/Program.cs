@@ -1,25 +1,33 @@
-using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Events.Sources;
 using WindowsInput.Events;
-using System.Threading.Tasks;
 
 namespace KeyVox.OsSpecific.Windows.App
 {
     internal static class Program
     {
+        private static Mutex? _mutex;
         [STAThread]
         public static void Main()
         {
+            var mutexName = Process.GetCurrentProcess().ProcessName;
+            _mutex = new Mutex(true, mutexName, out var isNewInstance);
+
+            if (!isNewInstance)
+            {
+                Console.WriteLine("An instance of the application is already running.");
+                Application.Exit();
+                return;
+            }
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             using var icon = new NotifyIcon();
-            var iconStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KeyVox.Startups.Windows.assets.logo.ico");
+            var iconStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("KeyVox.OsSpecific.Windows.App.assets.logo.ico");
             if (iconStream != null)
             {
                 var appIcon = new Icon(iconStream);
