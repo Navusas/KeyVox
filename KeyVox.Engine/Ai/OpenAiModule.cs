@@ -13,12 +13,11 @@ namespace KeyVox.Engine.Ai;
 public static class OpenAiModule
 {
     /// <summary>
-    /// Injects <seealso cref="ISpeechToTextClient"/> and <seealso cref="ITextToSpeechClient"/> alongside their compositor
-    /// <seealso cref="SpeechRecognitionClient"/>
+    /// Injects <seealso cref="IOpenAiClient"/> 
     /// </summary>
     /// <param name="services"></param>
     /// <exception cref="ArgumentException"></exception>
-    static void AddSpeechRecognition(this IServiceCollection services)
+    static void AddOpenAiModule(this IServiceCollection services)
     {
 
         var apiKey = Environment.GetEnvironmentVariable("KEYVOX_AZ_AI_API_KEY") ?? 
