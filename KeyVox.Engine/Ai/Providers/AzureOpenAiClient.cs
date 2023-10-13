@@ -1,5 +1,4 @@
-﻿using OpenAI;
-using OpenAI.Managers;
+﻿using OpenAI.Managers;
 using OpenAI.ObjectModels.RequestModels;
 
 namespace KeyVox.Engine.Ai.Providers;
@@ -8,16 +7,9 @@ public class AzureOpenAiClient : IOpenAiClient
 {
     private readonly OpenAIService _client;
 
-    public AzureOpenAiClient(string azureApikey)
+    public AzureOpenAiClient(OpenAIService openAiService)
     {
-        _client = new OpenAIService(new OpenAiOptions()
-        {
-            ApiKey = azureApikey,
-            ApiVersion = "2023-08-01-preview",
-            DeploymentId = "gpt4-32",
-            ResourceName = "redgate-ai",
-            ProviderType = ProviderType.Azure
-        });
+        _client = openAiService;
     }
 
     public async Task<string> ChatAsync(string snippet, string request)

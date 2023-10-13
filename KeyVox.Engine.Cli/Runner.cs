@@ -3,6 +3,8 @@ using KeyVox.Engine.Ai;
 using KeyVox.Engine.Ai.Providers;
 using KeyVox.Engine.SpeechRecognition.SpeechToText;
 using KeyVox.Engine.SpeechRecognition.SpeechToText.Providers;
+using OpenAI;
+using OpenAI.Managers;
 
 namespace KeyVox.Engine.Cli;
 
@@ -14,7 +16,16 @@ public static class Runner
         var speechRecognitionApiKey = GetEnvVariableOrThrow("KEYVOX_AZ_SPEECH_RECOGNITION_API_KEY");
         var speechRecognitionRegion = GetEnvVariableOrThrow("KEYVOX_AZ_SPEECH_RECOGNITION_REGION");
 
-        IOpenAiClient openAi = new AzureOpenAiClient(azureOpenAiApiKey);
+        var openAiService = new OpenAIService(new OpenAiOptions()
+        {
+            ApiKey = azureOpenAiApiKey,
+            ApiVersion = "2023-08-01-preview",
+            DeploymentId = "gpt4-32",
+            ResourceName = "redgate-ai",
+            ProviderType = ProviderType.Azure
+        });
+        
+        IOpenAiClient openAi = new AzureOpenAiClient(openAiService);
         ISpeechToTextClient speechToTextClient =
             new AzureSpeechToTextClient(speechRecognitionApiKey, speechRecognitionRegion);
 
