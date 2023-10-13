@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using KeyVox.Engine.Ai;
 using KeyVox.Engine.Ai.Providers;
-using KeyVox.Engine.SpeechRecognition;
 using KeyVox.Engine.SpeechRecognition.SpeechToText;
 using KeyVox.Engine.SpeechRecognition.SpeechToText.Providers;
 
@@ -11,8 +10,13 @@ public static class Runner
 {
     public static async Task Start(string userQuery)
     {
-        IOpenAiClient openAi = new AzureOpenAiClient();
-        ISpeechToTextClient speechToTextClient = new AzureSpeechToTextClient();
+        var azureOpenAiApiKey = GetEnvVariableOrThrow("KEYVOX_AZ_AI_API_KEY");
+        var speechRecognitionApiKey = GetEnvVariableOrThrow("KEYVOX_AZ_SPEECH_RECOGNITION_API_KEY");
+        var speechRecognitionRegion = GetEnvVariableOrThrow("KEYVOX_AZ_SPEECH_RECOGNITION_REGION");
+
+        IOpenAiClient openAi = new AzureOpenAiClient(azureOpenAiApiKey);
+        ISpeechToTextClient speechToTextClient =
+            new AzureSpeechToTextClient(speechRecognitionApiKey, speechRecognitionRegion);
 
         Console.WriteLine("[KeyVox]: What's your query? (speak into the microphone)...\n");
         Console.WriteLine("[KeyVox]: Press any key to stop recording...");
@@ -32,16 +36,19 @@ public static class Runner
         var finalizedSpeechResult = await speechToTextClient.StopRecognitionStreamAsync();
         Console.WriteLine($"[KeyVox]: You asked: '{finalizedSpeechResult}'");
         Console.WriteLine("[KeyVox]: Asking AI...");
-        
-        var result = await openAi.ChatAsync(userQuery,finalizedSpeechResult);
-        try 
+
+        var result = await openAi.ChatAsync(userQuery, finalizedSpeechResult);
+        try
         {
             var functionCallArgs = JsonSerializer.Deserialize<Prompts.AssistantResponseFuncArgs>(result);
             if (functionCallArgs?.Context is not null)
             {
-                Console.WriteLine($"[KeyVox]: AI comments:\n############################\n{functionCallArgs?.Context}\n############################");
+                Console.WriteLine(
+                    $"[KeyVox]: AI comments:\n############################\n{functionCallArgs?.Context}\n############################");
             }
-            Console.WriteLine($"[KeyVox]: AI snippet response:\n############################\n{functionCallArgs?.ResponseSnippet}\n############################");
+
+            Console.WriteLine(
+                $"[KeyVox]: AI snippet response:\n############################\n{functionCallArgs?.ResponseSnippet}\n############################");
         }
         catch (JsonException ex)
         {
@@ -49,7 +56,7 @@ public static class Runner
             Console.WriteLine($"Problematic JSON: {result}");
         }
     }
-    
+
     private static void UpdateLastLine(string newText)
     {
         // Move the cursor to the beginning of the last line
@@ -64,4 +71,8 @@ public static class Runner
         // Write the new text
         Console.WriteLine($"[KeyVox]: We heard: '{newText}'");
     }
+
+    private static string GetEnvVariableOrThrow(string parameterName)
+        => Environment.GetEnvironmentVariable(parameterName) ??
+           throw new ArgumentException($"{parameterName} not set and not found");
 }

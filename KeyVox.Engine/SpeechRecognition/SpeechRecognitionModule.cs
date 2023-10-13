@@ -18,6 +18,6 @@ public static class SpeechRecognitionModule
         services.AddSingleton<ISpeechToTextClient>(_ => new AzureSpeechToTextClient(apiKey, region));
         services.AddSingleton<ITextToSpeechClient>(_ => new AzureTextToSpeechClient(apiKey, region));
 
-        services.AddSingleton<SpeechClient>();
+        services.AddSingleton<SpeechRecognitionClient>();
     }
 }
